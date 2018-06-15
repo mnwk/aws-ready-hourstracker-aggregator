@@ -1,0 +1,7 @@
+AWSREGION="eu-west-1"
+AWSPROFILE="your-local-aws-profile(see ~/.aws/credentials)"
+STACKNAME="hours-aggregator"
+TMP_DIR="deploy"
+TEMPLATEFILE="timesheets.cfn.yaml"
+S3BUCKETNAME="existing-bucket-name-for-deployment-only(!not the email destination bucket!)"
+S3BUCKETPREFIX=$STACKNAME

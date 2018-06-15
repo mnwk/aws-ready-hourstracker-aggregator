@@ -1,0 +1,40 @@
+{
+	"name": "timesheets",
+	"version": "0.1.0",
+	"main": "index.js",
+	"author": "Maik Nowak <mail@maiknowak.de>",
+	"license": "MIT",
+	"dependencies": {
+		"csv-parse": "^2.4.0",
+		"emailjs-mime-parser": "^2.0.5",
+		"nodemailer": "^4.6.5"
+	},
+	"scripts": {
+		"lint:fix": "tslint -c tslint.json -p . --fix",
+		"test": "yarn tsc && yarn lint:fix && yarn ava dist/test/unit -v",
+		"prepare": "cp package.json dist/src && cd dist/src && yarn install --production && cd ..",
+		"zip": "cd dist/src && zip -rq deploy.zip . && mv deploy.zip ../../ && cd ../..",
+		"deploy": "yarn install && yarn tsc && yarn lint:fix && yarn prepare && deploy/deploy.sh",
+		"coverage": "nyc --reporter=html --all --reporter=text yarn ava dist/test/unit",
+		"coverage:coveralls": "yarn nyc --reporter=text-lcov | yarn coveralls"
+	},
+	"devDependencies": {
+		"@types/node": "^8.10.8",
+		"ava": "^0.23.0",
+		"aws-sdk": "^2.224.1",
+		"coveralls": "^3.0.1",
+		"nyc": "^11.2.1",
+		"ts-mockito": "^2.3.0",
+		"tslint": "^5.9.1",
+		"typescript": "^2.8.1"
+	},
+	"nyc": {
+		"exclude": [
+			"coverage",
+			"dist/src/lambda.js",
+			"dist/src/config/*",
+			"dist/src/entities/entities.js",
+			"dist/test"
+		]
+	}
+}

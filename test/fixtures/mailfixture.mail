@@ -1,0 +1,41 @@
+MIME-Version: 1.0
+Received: by 2002:a02:6595:0:0:0:0:0 with HTTP; Mon, 7 May 2018 07:18:26 -0700 (PDT)
+Date: Mon, 7 May 2018 16:18:26 +0200
+Subject: subsub
+Content-Type: multipart/mixed; boundary="000000000000ac5a43056b9e595a"
+
+--000000000000ac5a43056b9e595a
+Content-Type: multipart/alternative; boundary="000000000000ac5a40056b9e5958"
+
+--000000000000ac5a40056b9e5958
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Viele Gr=C3=BC=C3=9Fe
+
+
+SomeContent=
+--000000000000ac5a40056b9e5958
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+SomeContent=
+
+--000000000000ac5a40056b9e5958--
+--000000000000ac5a43056b9e595a
+Content-Type: text/comma-separated-values; charset="UTF-8"; name="CSVExport.csv"
+Content-Disposition: attachment; filename="CSVExport.csv"
+Content-Transfer-Encoding: base64
+Content-ID: <1633af07d0772efbf521>
+X-Attachment-Id: 1633af07d0772efbf521
+
+U29tZURhdGE=
+--000000000000ac5a43056b9e595a
+Content-Type: text/comma-separated-values; charset="US-ASCII"; name="TotalsCsvExport.csv"
+Content-Disposition: attachment; filename="TotalsCsvExport.csv"
+Content-Transfer-Encoding: base64
+Content-ID: <1633af07d0e2153f1e32>
+X-Attachment-Id: 1633af07d0e2153f1e32
+
+IkpvYiIsIlRvdGFsIER1cmF0aW9uIgoiTVRSSUJFUyIsIjc4OjMxIgo=
+--000000000000ac5a43056b9e595a--

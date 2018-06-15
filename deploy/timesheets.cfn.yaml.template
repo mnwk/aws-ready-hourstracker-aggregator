@@ -1,0 +1,122 @@
+Transform: AWS::Serverless-2016-10-31
+Parameters:
+  SESRecipient:
+    Type: String
+    Default: "#EDIT-ME aws-postbox@my.domain.tld"
+    Description: "email address for incomming rule and outgoing email_from"
+  AttachmentName:
+    Type: String
+    Default: "'EDIT-ME Export.csv"
+    Description: "Filename of your timesheet attachment"
+  SendResultTo:
+    Type: String
+    Default: "#EDIT-ME my-normal-email@example.org"
+    Description: "email address to send the result to"
+  EmailSubject:
+    Type: String
+    Default: "Timesheets"
+    Description: "title and body of email"
+  ProjectNameFilter:
+    Type: String
+    Default: "#EDIT-ME Project1"
+    Description: "Filter by projectname"
+
+Resources:
+  TimesheetsMailBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+
+  ReceiptRuleSet:
+    Type: 'AWS::SES::ReceiptRuleSet'
+    Properties:
+      RuleSetName: HandleTimesheetsRuleSet
+
+  S3SESWritePolicy:
+    Type: "AWS::S3::BucketPolicy"
+    Properties:
+      Bucket: !Ref TimesheetsMailBucket
+      PolicyDocument:
+        Statement:
+          -
+            Sid: "AllowSESPuts"
+            Effect: "Allow"
+            Principal:
+              Service: "ses.amazonaws.com"
+            Action: "s3:PutObject"
+            Resource:
+              Fn::Join:
+                - ""
+                -
+                  - "arn:aws:s3:::"
+                  - !Ref TimesheetsMailBucket
+                  - "/*"
+            Condition:
+                StringEquals:
+                    "aws:Referer": !Ref "AWS::AccountId"
+
+  SESCallLambdaPermission:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: "lambda:InvokeFunction"
+      FunctionName: !Ref HandleTimesheetsFunction
+      Principal: "ses.amazonaws.com"
+      SourceAccount: !Ref "AWS::AccountId"
+
+  ReceiptRuleAddToS3AndTriggerLambda:
+    DependsOn:
+      - SESCallLambdaPermission
+    Type: "AWS::SES::ReceiptRule"
+    Properties:
+      RuleSetName: !Ref ReceiptRuleSet
+      Rule:
+        Name: StoreToS3AndTriggerLambda
+        Recipients:
+          - !Ref SESRecipient
+        Enabled: true
+        Actions:
+          - LambdaAction:
+              FunctionArn: !GetAtt HandleTimesheetsFunction.Arn
+              InvocationType: Event
+          - S3Action:
+              BucketName: !Ref TimesheetsMailBucket
+
+  HandleTimesheetsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Environment:
+        Variables:
+          PROJECT_NAME: !Ref ProjectNameFilter
+          EMAILBUCKET: !Ref TimesheetsMailBucket
+          EMAIL_FROM: !Ref SESRecipient
+          EMAIL_TO: !Ref SendResultTo
+          EMAIL_SUBJECT: !Ref EmailSubject
+          EMAIL_TEXT: !Ref EmailSubject
+          EMAIL_HTML: !Ref EmailSubject
+          ATTACHMENT_NAME: !Ref AttachmentName
+      CodeUri: ../dist/src
+      FunctionName: HandleTimesheetsFunction
+      Handler: lambda.handler
+      Policies:
+        - AWSLambdaExecute
+        -
+          Version: "2012-10-17"
+          Statement:
+            -
+              Sid: "AllowLambdaToSendMail"
+              Effect: "Allow"
+              Action:
+                - ses:SendRawEmail
+              Resource: "*"
+        -
+          Version: "2012-10-17"
+          Statement:
+            -
+              Sid: "AllowLambdaToAccessS3"
+              Effect: "Allow"
+              Action:
+                - s3:PutObject
+                - s3:GetObject
+                - s3:DeleteObject
+              Resource: !GetAtt TimesheetsMailBucket.Arn
+      Runtime: nodejs6.10
+      Timeout: 120
