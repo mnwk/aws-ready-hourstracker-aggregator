@@ -16,7 +16,7 @@
 		"zip": "cd dist/src && zip -rq deploy.zip . && mv deploy.zip ../../ && cd ../..",
 		"deploy": "yarn install && yarn tsc && yarn lint:fix && yarn prepare && deploy/deploy.sh",
 		"coverage": "nyc --reporter=html --all --reporter=text yarn ava dist/test/unit",
-		"coverage:coveralls": "yarn nyc --reporter=text-lcov | yarn coveralls"
+		"coverage:badge": "yarn nyc report --reporter=text-lcov | yarn coveralls"
 	},
 	"devDependencies": {
 		"@types/node": "^8.10.8",
