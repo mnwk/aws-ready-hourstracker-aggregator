@@ -40,8 +40,9 @@ Have your local [aws credentials set up](https://docs.aws.amazon.com/cli/latest/
     cp config.sh.template config.sh
     cp timesheets.cfn.yaml.template timesheets.cfn.yaml
     ```
-3) Edit the new files to your needs. Only edit the Parameter section in the CloudFormation file. ProjectNameFilter 
-depends on your time tracking app and settings (see "Supported cvs format")
+3) Edit the new files to your needs. Only edit the Parameter section in the CloudFormation file.
+* ProjectNameFilter depends on your time tracking app and settings (see "Supported cvs format")
+* TracingSwitch enables/disables x-ray tracing (default off)
 
 ### Deployment
 Hit `yarn deploy` and cross fingers.
@@ -54,5 +55,7 @@ You may now send a mail with the attached timetracking csv from you app to your 
 seconds you should receive a new email in you result postbox.
 
 ## Trouble shooting
-Have a look at [Cloudwatch](https://eu-west-1.console.aws.amazon.com/cloudwatch)->Logs and search for 
+* Have a look at [Cloudwatch](https://eu-west-1.console.aws.amazon.com/cloudwatch)->Logs and search for 
 `/aws/lambda/HandleTimesheetsFunction`
+* enable Tracing (TracingSwitch), redeploy and check [X-Ray](https://eu-west-1.console.aws.amazon.com/xray)
+* **Deleting Stack**: make sure to disable "StoreToS3AndTriggerLambda" RuleSet in SES before deleting

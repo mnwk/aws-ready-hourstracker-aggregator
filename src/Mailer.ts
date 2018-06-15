@@ -1,5 +1,6 @@
 import { IMailConfig } from './entities/entities'
-import * as AWS from 'aws-sdk'
+const AWSXRay = require('aws-xray-sdk-core')
+const AWS = AWSXRay.captureAWS(require('aws-sdk'))
 import * as nodemailer from 'nodemailer'
 
 export class Mailer {
