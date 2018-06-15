@@ -7,7 +7,8 @@
   "dependencies": {
     "csv-parse": "^2.4.0",
     "emailjs-mime-parser": "^2.0.5",
-    "nodemailer": "^4.6.5"
+    "nodemailer": "^4.6.5",
+    "aws-xray-sdk-core": "^1.2.0"
   },
   "scripts": {
     "lint:fix": "tslint -c tslint.json -p . --fix",

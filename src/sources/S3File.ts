@@ -1,5 +1,5 @@
-import * as AWS from 'aws-sdk'
-
+const AWSXRay = require('aws-xray-sdk-core')
+const AWS = AWSXRay.captureAWS(require('aws-sdk'))
 export class S3File {
   private readonly bucket: string
   private s3Client: AWS.S3

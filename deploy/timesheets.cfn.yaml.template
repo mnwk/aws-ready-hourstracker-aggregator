@@ -20,6 +20,13 @@ Parameters:
     Type: String
     Default: "#EDIT-ME Project1"
     Description: "Filter by projectname"
+  TracingSwitch:
+    Type: String
+    Default: PassThrough
+    AllowedValues:
+      - Active
+      - PassThrough
+    Description: "Enables/Disables X-Ray Tracing"
 
 Resources:
   TimesheetsMailBucket:
@@ -102,6 +109,17 @@ Resources:
           Version: "2012-10-17"
           Statement:
             -
+              Sid: "AllowXRay"
+              Effect: "Allow"
+              Action:
+                - xray:PutTraceSegments
+                - xray:PutTelemetryRecords
+              Resource:
+                  "*"
+        -
+          Version: "2012-10-17"
+          Statement:
+            -
               Sid: "AllowLambdaToSendMail"
               Effect: "Allow"
               Action:
@@ -119,4 +137,6 @@ Resources:
                 - s3:DeleteObject
               Resource: !GetAtt TimesheetsMailBucket.Arn
       Runtime: nodejs6.10
+      MemorySize: 256
       Timeout: 120
+      Tracing: !Ref TracingSwitch

@@ -16,12 +16,7 @@ test('happy path', async t => {
 
 test('no mock', async t => {
   const s3 = new S3File('someBucketName')
-  try {
-    await s3.get('some')
-    t.fail()
-  } catch (e) {
-    t.is(e.code, 'CredentialsError')
-  }
+  await t.throws(s3.get('some'))
 })
 
 class S3ClientMock {
